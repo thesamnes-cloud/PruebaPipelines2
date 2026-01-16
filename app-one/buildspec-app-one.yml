@@ -12,9 +12,13 @@ phases:
         docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   build:
-    commands:
-      - docker build -t $ImageName -f app-one/Dockerfile .
-      - docker images
+  commands:
+    - pwd
+    - ls -la
+    - cd PruebaPipelines2
+    - ls -la
+    - docker build -t $ImageName -f app-one/Dockerfile .
+
 
   post_build:
     commands:
