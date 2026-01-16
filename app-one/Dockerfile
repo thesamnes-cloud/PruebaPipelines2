@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
 WORKDIR /app
-COPY app.py .
+COPY app-one/app.py .
 
 CMD ["python", "app.py"]
