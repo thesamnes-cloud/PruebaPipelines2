@@ -2,21 +2,24 @@ version: 0.2
 
 env:
   variables:
-    IMAGE_NAME: app-two
+    ImageName: app-one
     AWS_DEFAULT_REGION: us-east-2
 
 phases:
   pre_build:
     commands:
+      - echo "SRC DIR = $CODEBUILD_SRC_DIR"
+      - ls -la $CODEBUILD_SRC_DIR
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
-        docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+        docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
 
   build:
     commands:
-      - docker build -t $IMAGE_NAME -f app-two/Dockerfile .
-      - docker images
+      - cd $CODEBUILD_SRC_DIR
+      - ls -la
+      - docker build -t $ImageName -f app-one/Dockerfile .
 
   post_build:
     commands:
-      - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAME:latest
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAME:latest
+      - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
+      - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
