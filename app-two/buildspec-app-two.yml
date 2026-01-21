@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    ImageName: app-one
+    ImageName: app-two
     AWS_DEFAULT_REGION: us-east-2
 
 phases:
@@ -17,9 +17,10 @@ phases:
     commands:
       - cd $CODEBUILD_SRC_DIR
       - ls -la
-      - docker build -t $ImageName -f app-one/Dockerfile .
+      - docker build -t $ImageName -f app-two/Dockerfile .
 
   post_build:
     commands:
       - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
       - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
+
