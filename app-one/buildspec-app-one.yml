@@ -6,19 +6,28 @@ env:
     AWS_DEFAULT_REGION: us-east-2
 
 phases:
-  pre_build:
-    commands:
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
-        docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+ pre_build:
+  commands:
+    - echo "SRC DIR = $CODEBUILD_SRC_DIR"
+    - ls -la $CODEBUILD_SRC_DIR
+
+    - echo "Login to ECR"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+    - |
+      aws ecr describe-repositories \
+        --repository-names $ImageName \
+        --region $AWS_DEFAULT_REGION \
+      || aws ecr create-repository \
+        --repository-name $ImageName \
+        --region $AWS_DEFAULT_REGION
+
 
   build:
-  commands:
-    - pwd
-    - ls -la
-    - cd PruebaPipelines2
-    - ls -la
-    - docker build -t $ImageName -f app-one/Dockerfile .
-
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - ls -la
+      - docker build -t $ImageName -f app-one/Dockerfile .
 
   post_build:
     commands:
