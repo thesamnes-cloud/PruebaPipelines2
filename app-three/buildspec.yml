@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+version: 0.2
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: us-east-2
+
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
+        docker login --username AWS --password-stdin \
+        492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+  build:
+    commands:
+      - docker build -t app-three -f app-three/Dockerfile .
+
+  post_build:
+    commands:
+      - docker tag app-three:latest \
+        492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/app-three:latest
+      - docker push \
+        492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/app-three:latest
+=======
 version: 0.2
 
 env:
@@ -33,3 +58,4 @@ phases:
     commands:
       - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
       - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
+>>>>>>> fbc32b35a070a2f7cb96be8a5436b2c5f91fb0d2
