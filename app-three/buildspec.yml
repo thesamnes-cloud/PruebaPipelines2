@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  variables:
+    ImageName: app-three
+    AWS_DEFAULT_REGION: us-east-2
+
+phases:
+ pre_build:
+  commands:
+    - echo "SRC DIR = $CODEBUILD_SRC_DIR"
+    - ls -la $CODEBUILD_SRC_DIR
+
+    - echo "Login to ECR"
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+    - |
+      aws ecr describe-repositories \
+        --repository-names $ImageName \
+        --region $AWS_DEFAULT_REGION \
+      || aws ecr create-repository \
+        --repository-name $ImageName \
+        --region $AWS_DEFAULT_REGION
+
+
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR
+      - ls -la
+      - docker build -t $ImageName -f app-three/Dockerfile .
+
+  post_build:
+    commands:
+      - docker tag $ImageName:latest 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
+      - docker push 492267475956.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ImageName:latest
